@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Edit Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/templatemo-cyborg-gaming.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'https://unpkg.com/swiper@7/swiper-bundle.min.css' %}">
+    <style>
+        /* Add your CSS styles here */
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        .header-area {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #333333;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            margin-right: 20px; /* Added margin to separate from the navigation */
+        }
+
+        .search-input form {
+            display: flex;
+            align-items: center; /* Align items vertically */
+        }
+
+        .search-input input[type="text"] {
+            flex-grow: 1;
+            margin-right: 10px; /* Added spacing between input and button */
+        }
+
+        .nav {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Change to flex to align items horizontally */
+        }
+
+        .nav li {
+            margin-right: 20px;
+        }
+
+        .nav li:last-child {
+            margin-right: 0;
+        }
+
+        .nav a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav a.active {
+            color: #007bff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-area">
+    <div class="container">
+        <nav class="main-nav">
+            <div class="search-input">
+                <form id="search" action="{% url 'search_app:SearchResult' %}">
+                    <input type="text" placeholder="Type Something" id="searchText" name="q" onkeypress="handle">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <ul class="nav">
+                <li><a href="{% url 'finalapp5:allProdCat' %}" class="active">Home</a></li>
+                <li><a href="{% url 'finalapp5:browse' %}">Browse</a></li>
+                <li><a href="{% url 'finalapp5:profile' %}">Profile <img src="" alt=""></a></li>
+                <li>
+                <a class="nav-link" href="{% url 'cart:cart_detail' %}"><i class="fa-solid fa-cart-shopping"></i>({{item_count}})</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="page-content">
+    <main>
+        {% block content %}
+        <!-- Add your content here -->
+        {% if not cart_items %}
+        <div>
+            <div class="text-center">
+                <br>
+                <h1 class="text-center my_title">
+                    You have not selected your favorite movies
+                </h1>
+                <br>
+                <p class="text-center">
+                    Please Click <a href="{% url 'finalapp5:allProdCat' %}">Here</a> to continue adding movies.
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mx-auto">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+                <table class="table my_custom_table">
+                    <thead class="my_custom_thead">
+                        <tr>
+                            <th colspan="2">
+                                Favorite Movies
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cart_item in cart_items %}
+                        <tr>
+                            <td>
+                                <a href=""><img src="{{cart_item.movie.image.url}}" alt="" style="height: 50%; width: 100%; object-fit: cover;"></a>
+                            </td>
+                           <td class="text-lef">
+                                {{cart_item.movie.name}}
+
+                                {% if cart_item.quantity < cart_item.movie.stock %}
+                                <td>
+                                    <a href="{% url 'cart:add_cart' cart_item.movie.id %} " class="custom_a"><i class="fa-solid fa-plus" aria-hidden="true"></i></a>
+
+                                    &nbsp;<a href="{% url 'cart:full_remove' cart_item.movie.id %}" class="custom_icon"><i class="fa-solid fa-trash "></i></a>
+                                </td>
+                                {% else %}
+                                <td>
+
+                                    &nbsp;<a href="{% url 'cart:full_remove' cart_item.movie.id %}" class="custom_icon"><i class="fa-solid fa-trash custom_icon"></i></a>
+
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center">
+                <br>
+                <p class="text-center">
+                    Please Click <a href="{% url 'finalapp5:allProdCat' %}">Here</a> to continue adding movies.
+                </p>
+            </div>
+        {% endif %}
+        {% endblock %}
+    </main>
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
+    <!-- Add your JavaScript scripts or links here -->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'assets/js/isotope.min.js' %}"></script>
+  <script src="{% static 'assets/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'assets/js/tabs.js' %}"></script>
+  <script src="{% static 'assets/js/popup.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+</body>
+ 
+</html>

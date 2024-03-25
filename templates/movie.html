@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cyborg - Awesome HTML5 Template</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/templatemo-cyborg-gaming.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
+    <!-- Template Style -->
+    <link rel="stylesheet" href="{% static 'assets/css/custom-style.css' %}">
+    <style>
+        /* Custom Styles for Movie Page */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #535557;
+            color: #333;
+        }
+
+        .breadcrumb {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .movie-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-details {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-card {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-review-form {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+  <!-- Preloader Start -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <!-- Preloader End -->
+
+  <!-- Header Area Start -->
+  <header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-av">
+
+                </nav>
+            </div>
+        </div>
+    </div>
+  </header>
+  <!-- Header Area End -->
+
+  <!-- Content Area Start -->
+  {% block content %}
+<div class="row my_prod_row_class">
+    <div class="mx_auto">
+<p> <a href="{% url 'finalapp5:allProdCat' %}">Home</a> | <a href="{{movie.category.get_url}}">{{movie.category}}</a>|{{movie.name}}</p>
+
+
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="row">
+                <div class="col-md-4">
+                   <a href="{{movie.category.get_url}}">
+                  <img src="{{ movie.image.url }}" alt="{{ movie.name }}" class="img-fluid movie-image">
+                     A  {{movie.actors}} Movie
+                       </a>
+                    {% if category %}
+                    <p class="card-text">{{ category.description }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="movie-details">
+                        <h1 class="my-4">{{ movie.name }}</h1>
+                        <p><a href="{{movie.category.get_url}}">{{movie.category}}</a>|{{movie.name}}|{{movie.actors}}</p>
+                        <p class="text-muted my-2"><strong>Product Description:</strong></p>
+                        <p class="text-justify">{{ movie.description }}</p><br>
+                        <li>Trailer: <a href="{{ movie.trailer_link }}">{{ movie.trailer_link }}</a></li><br>
+
+                        {% if movie.stock <= 0 %}
+                            <p class="text-muted my-2"><strong>Status:</strong> <span class="text-danger">Out of Stock</span></p>
+                        {% else %}
+                            <a class="btn btn-secondary my-2" href="{% url 'cart:add_cart' movie.id %}">Add to Favorites</a>
+                        {% endif %}
+                        {% if user.is_authenticated and user == movie.user %}
+                            <a href="{% url 'finalapp5:edit_movie' movie.id %}" class="btn btn-primary my-2">Edit Movie</a>
+                            <a href="{% url 'finalapp5:delete_movie' movie.id %}" class="btn btn-danger my-2">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h2 class="my-4">Reviews</h2>
+            {% for review in movie.review_set.all %}
+                <div class="review-card">
+                   <h5 style="color: black;">User: {{ review.user.username }}</h5>
+                    <p>Rating: {{ review.rating }}</p>
+                    <p>Comment: {{ review.comment }}</p>
+                    <p>Posted: {{ review.created_at }}</p>
+                </div>
+            {% endfor %}
+            <ul>
+            {% for movie in movies %}
+            <li>{{ movie.name }} - {{ movie.category }}</li>
+            <!-- Display actors and trailer link for each movie -->
+            <li>Actors: {{ movie.actors }}</li>
+            <li>Trailer: <a href="{{ movie.trailer_link }}">{{ movie.trailer_link }}</a></li>
+            {% endfor %}
+            </ul>
+
+            {% if user.is_authenticated %}
+                <div class="add-review-form">
+                    <h3 class="my-4">Add Your Review</h3>
+                    <form method="post" action="{% url 'finalapp5:add_review' movie_id=movie.id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            {% else %}
+                <p class="my-4">Please <a href="{% url 'login' %}">login</a> to add a review.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<!-- Content Area End -->
+
+<!-- Footer Area Start -->
+<footer>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <p>Copyright © 2024 <a href="#">Movie Collection</a> Company. All rights reserved.
+
+          <br>Design: <a href="https://templatemo.com" target="_blank" title="Movie Collection">Movie Collection</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</footer>
+<!-- Footer Area End -->
+
+<!-- Scripts -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/js/tabs.js' %}"></script>
+  <script src="{% static 'assets/js/popup.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+
+
+  </div>
+{% endblock %}
+</html>
